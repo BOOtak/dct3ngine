@@ -45,27 +45,36 @@ void game_screen_draw()
 
     dy_low += ONE / 6;
     dy_high += ONE / 4;
-    // int cell_size = 16;
-    // for (int j = 0; j < SCREEN_HEIGHT; j++)
-    // {
-    //     for (int i = 0; i < SCREEN_WIDTH; i++)
-    //     {
-    //         // Fixed val_low = perlin(FIX(i) / cell_size, FIX(j) / cell_size + dy_low, angle, 0);
-    //         Fixed val_low = perlin(FIX(i) / cell_size, FIX(j) / cell_size, angle, 0);
-    //         // Fixed mul = FIX_DIV(FIX(j), FIX(SCREEN_HEIGHT));
-    //         // val_low = FIX_MUL(val_low, mul);
+    int cell_size = 16;
 
-    //         // Fixed val_high = perlin(FIX(i) / cell_size * 2, FIX(j) / cell_size * 2 + dy_high, angle, 1);
+    Fixed one_over_screen_height = FIX_DIV(ONE, FIX(screen_height));
+    for (int j = 0; j < screen_height; j++)
+    {
+        for (int i = 0; i < screen_width - 1; i++)
+        {
+            if (i + j & 1)
+            {
+                Fixed val_low = perlin(FIX(i) / cell_size, FIX(j) / cell_size + dy_low, angle, 0);
+                Fixed mul = FIX_MUL(FIX(j), one_over_screen_height);
+                val_low = FIX_MUL(val_low, mul);
 
-    //         // Fixed res = (val_low + val_high / 2) * 2 / 3;
-    //         // if (res > 400) {
-    //         if (val_low > 512) {
-    //             DrawPixel(i, j, fg);
-    //         }
-    //     }
-    // }
+                Fixed val_high = perlin(FIX(i) / cell_size * 2, FIX(j) / cell_size * 2 + dy_high, angle, 1);
 
-    perlin16_fast(screen_width, screen_height, angle);
+                Fixed res = (val_low + val_high / 2) * 2 / 3;
+                if (res > 350)
+                {
+                    draw_pixel(i, j);
+                }
+                if (res > 450)
+                {
+                    draw_pixel(i, j);
+                    draw_pixel(i + 1, j);
+                }
+            }
+        }
+    }
+
+    // perlin16_fast(screen_width, screen_height, angle);
 
     printf("%d %d %d %d\n", randoms, rotations, gradients, interpolations);
 }
