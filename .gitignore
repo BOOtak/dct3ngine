@@ -22,6 +22,8 @@ install_manifest.txt
 compile_commands.json
 CTestTestfile.cmake
 _deps
+CPackConfig.cmake
+CPackSourceConfig.cmake
 
 # Prerequisites
 *.d
@@ -78,3 +80,7 @@ dkms.conf
 
 # build directory
 build/
+
+# artifacts
+perlin_test
+snake_pit

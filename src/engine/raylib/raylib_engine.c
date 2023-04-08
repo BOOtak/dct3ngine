@@ -129,7 +129,7 @@ uchar *get_screen_buf()
  * @param key ken on Nokia keypad to check
  * @return int 1 if pressed, 0 otherwise
  */
-int is_key_down(key_t key)
+int is_key_down(key_3310_t key)
 {
     switch (key)
     {

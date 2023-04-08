@@ -59,7 +59,7 @@ void UpdateDrawFrame()
 int main(int argc, char const *argv[])
 {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-    InitWindow(screen_width * 5 * PIXEL_ASPECT_RATIO, screen_height * 5, "3310 engine");
+    InitWindow(screen_width * 5 * PIXEL_ASPECT_RATIO, screen_height * 5, "3310 engine (raylib)");
 
     target = LoadRenderTexture(screen_width, screen_height);
     SetTextureFilter(target.texture, TEXTURE_FILTER_POINT); // Texture scale filter to use

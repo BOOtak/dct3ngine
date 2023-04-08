@@ -21,7 +21,7 @@ typedef enum
     KEYPAD_ASTERISK = 0b0000001000000000,
     KEYPAD_0 = 0b0000010000000000,
     KEYPAD_SHARP = 0b0000100000000000
-} key_t;
+} key_3310_t;
 
 /**
  * @brief First screen to be processed when the game starts. You should have a
@@ -36,6 +36,6 @@ void draw_pixel(uchar x, uchar y);
 
 uchar *get_screen_buf();
 
-int is_key_down(key_t key);
+int is_key_down(key_3310_t key);
 
 #endif // ENGINE_H
