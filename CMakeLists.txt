@@ -17,8 +17,12 @@ if (NOT MSVC)
 endif()
 
 if (EMSCRIPTEN)
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -s USE_GLFW=3 -s ASSERTIONS=1 -s WASM=1 -s ASYNCIFY")
-endif ()
+    if (BACKEND STREQUAL "SDL2")
+       set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -s USE_SDL=2")
+    else()
+       set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -s USE_GLFW=3 -s ASSERTIONS=1 -s WASM=1 -s ASYNCIFY")
+    endif()
+endif()
 
 # add_subdirectory(libs/raygui/projects/CMake)
 
