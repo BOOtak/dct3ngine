@@ -4,7 +4,9 @@
 #include "sdl2_config.h"
 #include "../engine_internal.h"
 
+SDL_Surface *video;
 SDL_Renderer *render;
+SDL_Texture *texture;
 
 screen_t current_screen;
 
@@ -30,9 +32,9 @@ void UpdateDrawFrame(void) {
 	current_screen.draw();
 	end_draw(true);
 
-	SDL_Texture *texture = SDL_CreateTextureFromSurface(render, surface);
+	SDL_BlitSurface(surface, NULL, video, NULL);
+	SDL_UpdateTexture(texture, NULL, video->pixels, video->pitch);
 	SDL_RenderCopy(render, texture, NULL, NULL);
-	SDL_DestroyTexture(texture);
 }
 
 int main(int argc, char *argv[]) {
@@ -56,10 +58,23 @@ int main(int argc, char *argv[]) {
 		return EXIT_FAILURE;
 	}
 
+	video = SDL_CreateRGBSurface(0, screen_width, screen_height, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
+	if (video == NULL) {
+		SDL_Log("SDL_CreateRGBSurface (video) failed: %s", SDL_GetError());
+		exit(EXIT_FAILURE);
+	}
+
 	surface = SDL_CreateRGBSurface(0, screen_width, screen_height, 8, 0x00, 0x00, 0x00, 0x00);
 	if (surface == NULL) {
-		SDL_Log("SDL_CreateRGBSurface failed: %s", SDL_GetError());
+		SDL_Log("SDL_CreateRGBSurface (surface) failed: %s", SDL_GetError());
 		return EXIT_FAILURE;
+	}
+
+	texture = SDL_CreateTexture(render, SDL_PIXELFORMAT_ARGB8888,
+		SDL_TEXTUREACCESS_STREAMING, screen_width, screen_height);
+	if (texture == NULL) {
+		SDL_Log("SDL_CreateTexture failed: %s", SDL_GetError());
+		exit(EXIT_FAILURE);
 	}
 
 	current_screen = game_screen;
@@ -111,7 +126,9 @@ int main(int argc, char *argv[]) {
 
 	close_engine();
 
+	SDL_DestroyTexture(texture);
 	SDL_FreeSurface(surface);
+	SDL_FreeSurface(video);
 	SDL_DestroyRenderer(render);
 	SDL_DestroyWindow(window);
 
