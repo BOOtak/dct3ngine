@@ -4,9 +4,19 @@
 #include "sdl2_config.h"
 #include "../engine_internal.h"
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+
+typedef struct {
+	config_t cfg;
+} CONTEXT_EMSCRIPTEN;
+#endif
+
 SDL_Surface *video;
 SDL_Renderer *render;
 SDL_Texture *texture;
+
+int running = 1;
 
 screen_t current_screen;
 
@@ -37,10 +47,59 @@ void UpdateDrawFrame(void) {
 	SDL_RenderCopy(render, texture, NULL, NULL);
 }
 
-int main(int argc, char *argv[]) {
-	int running = 1;
+void loop_step(config_t config) {
 	SDL_Event event;
 
+	while (SDL_PollEvent(&event) != 0) {
+		switch (event.type) {
+			case SDL_KEYDOWN:
+				switch (event.key.keysym.scancode) {
+#ifndef __EMSCRIPTEN__
+					case SDL_SCANCODE_ESCAPE:
+						running = 0;
+						break;
+#endif
+					case SDL_SCANCODE_F1:
+						config.palette = PALETTE_ORIGINAL;
+						sdl2_set_config(config);
+						break;
+					case SDL_SCANCODE_F2:
+						config.palette = PALETTE_HARSH;
+						sdl2_set_config(config);
+						break;
+					case SDL_SCANCODE_F3:
+						config.palette = PALETTE_GRAY;
+						sdl2_set_config(config);
+						break;
+					case SDL_SCANCODE_F4:
+						config.show_3310_fps = !config.show_3310_fps;
+						sdl2_set_config(config);
+						break;
+					default:
+						break;
+				}
+				break;
+#ifndef __EMSCRIPTEN__
+			case SDL_QUIT:
+				running = 0;
+				break;
+#endif
+			default:
+				break;
+		}
+	}
+	UpdateDrawFrame();
+	SDL_RenderPresent(render);
+}
+
+#ifdef __EMSCRIPTEN__
+static void main_loop_emscripten(void *arguments) {
+	CONTEXT_EMSCRIPTEN *context = (CONTEXT_EMSCRIPTEN *) arguments;
+	loop_step(context->cfg);
+}
+#endif
+
+int main(int argc, char *argv[]) {
 	SDL_Window *window = SDL_CreateWindow(
 		"3310 Engine (SDL)",
 		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
@@ -84,45 +143,16 @@ int main(int argc, char *argv[]) {
 	config_t config = { .palette = PALETTE_HARSH, .show_3310_fps = true };
 	sdl2_set_config(config);
 
+#ifndef __EMSCRIPTEN__
 	while (running) {
-		while (SDL_PollEvent(&event) != 0) {
-			switch (event.type) {
-				case SDL_KEYDOWN:
-					switch (event.key.keysym.scancode) {
-						case SDL_SCANCODE_ESCAPE:
-							running = 0;
-							break;
-						case SDL_SCANCODE_F1:
-							config.palette = PALETTE_ORIGINAL;
-							sdl2_set_config(config);
-							break;
-						case SDL_SCANCODE_F2:
-							config.palette = PALETTE_HARSH;
-							sdl2_set_config(config);
-							break;
-						case SDL_SCANCODE_F3:
-							config.palette = PALETTE_GRAY;
-							sdl2_set_config(config);
-							break;
-						case SDL_SCANCODE_F4:
-							config.show_3310_fps = !config.show_3310_fps;
-							sdl2_set_config(config);
-							break;
-						default:
-							break;
-					}
-					break;
-				case SDL_QUIT:
-					running = 0;
-					break;
-				default:
-					break;
-			}
-		}
-		UpdateDrawFrame();
-		SDL_RenderPresent(render);
+		loop_step(config);
 		SDL_Delay(1000 / FPS);
 	}
+#else
+	CONTEXT_EMSCRIPTEN context;
+	context.cfg = config;
+	emscripten_set_main_loop_arg(main_loop_emscripten, &context, FPS, 1); // 15 FPS.
+#endif
 
 	close_engine();
 
