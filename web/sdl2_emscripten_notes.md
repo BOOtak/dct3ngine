@@ -15,6 +15,7 @@ SDL2 and Emscripten
 	
 	emcmake cmake -DBACKEND=SDL2 ..
 	make
+	emstrip -s perlin_test
 	```
 
 3. Copy all necessary files:
