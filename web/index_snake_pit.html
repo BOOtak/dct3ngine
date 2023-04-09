@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>Snake Pit</title>
+	</head>
+	<body>
+		<table style="margin: 10px">
+			<tbody>
+				<tr>
+					<td>
+						<canvas id="canvas" oncontextmenu="event.preventDefault()" width="336" height="240"></canvas>
+					</td>
+					<td style="padding-left: 25px">
+						<h3>Snake Pit</h3>
+						<p>Snake Pit demo by <a href="https://github.com/BOOtak" title="@BOOtak" target="_blank">BOOtak</a> (Kirill Leyfer) with using <a href="https://www.libsdl.org/" title="Simple DirectMedia Layer is a cross-platform development library designed to provide low level access to audio, keyboard, mouse, joystick, and graphics hardware via OpenGL and Direct3D." target="_blank">SDL2</a> and <a href="https://emscripten.org/" title="Emscripten is a complete compiler toolchain to WebAssembly, using LLVM, with a special focus on speed, size, and the Web platform." target="_blank">Emscripten</a> frameworks.</p>
+						<p><strong>Controls:</strong></p>
+						<ul>
+							<li>F1, F2, F3 &ndash; Change palette.</li>
+							<li>Arrows &ndash; Movement.</li>
+							<li><em>TODO</em>.</li>
+						</ul>
+						<p><strong>Source code:</strong></p>
+						<p><a href="https://github.com/BOOtak/dct3ngine" title="dct3engine GitHub Repository" target="_blank">https://github.com/BOOtak/dct3ngine</a></p>
+						<p><strong><em>&#169; 09-Apr-2023.</strong></em></p>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<script type='text/javascript'>
+			var Module = {
+				canvas: (function() { return document.getElementById('canvas'); })()
+			};
+		</script>
+		<script src="snake_pit.js"></script>
+	</body>
+</html>
