@@ -120,7 +120,7 @@ int main(int argc, char *argv[]) {
 	video = SDL_CreateRGBSurface(0, screen_width, screen_height, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
 	if (video == NULL) {
 		SDL_Log("SDL_CreateRGBSurface (video) failed: %s", SDL_GetError());
-		exit(EXIT_FAILURE);
+		return EXIT_FAILURE;
 	}
 
 	surface = SDL_CreateRGBSurface(0, screen_width, screen_height, 8, 0x00, 0x00, 0x00, 0x00);
@@ -133,7 +133,7 @@ int main(int argc, char *argv[]) {
 		SDL_TEXTUREACCESS_STREAMING, screen_width, screen_height);
 	if (texture == NULL) {
 		SDL_Log("SDL_CreateTexture failed: %s", SDL_GetError());
-		exit(EXIT_FAILURE);
+		return EXIT_FAILURE;
 	}
 
 	current_screen = game_screen;
@@ -151,7 +151,7 @@ int main(int argc, char *argv[]) {
 #else
 	CONTEXT_EMSCRIPTEN context;
 	context.cfg = config;
-	emscripten_set_main_loop_arg(main_loop_emscripten, &context, FPS, 1); // 15 FPS.
+	emscripten_set_main_loop_arg(main_loop_emscripten, &context, FPS, 1); // ~15 FPS.
 #endif
 
 	close_engine();
