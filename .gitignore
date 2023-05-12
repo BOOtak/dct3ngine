@@ -80,7 +80,3 @@ dkms.conf
 
 # build directory
 build/
-
-# artifacts
-perlin_test
-snake_pit
